@@ -425,14 +425,12 @@ function main() {
     sounder.addFile("sound/replay.wav", "replay").addTag("se");
     sounder.addFile("sound/BIG1.mp3", "BIG1").addTag("bgm")
     sounder.addFile("sound/SBIG.mp3", "SBIG").addTag("bgm")
-    sounder.addFile("sound/nezumiBIG.wav", "ネズミBIG").addTag("bgm")
     sounder.addFile("sound/reg1.mp3", "reg").addTag("bgm");
     sounder.addFile("sound/title.wav",'title').addTag("se");
     sounder.addFile("sound/type.mp3",'type').addTag("se");
     sounder.addFile("sound/yokoku.wav",'yokoku').addTag("se");
     sounder.addFile("sound/kokutise.mp3",'kokuti').addTag("se");
 
-    sounder.addFile("sound/bpay.wav", "bpay").addTag("se").setVolume(0.5);
     sounder.setVolume("se", 0.2)
     sounder.setVolume("bgm", 0.1)
     sounder.loadFile(function() {
@@ -705,7 +703,8 @@ function main() {
             return;
         }
         if(lot == 'REG' || bonusflag != 'none'){lot = 'BIG'}
-        var effect = getEffect[lot]&&getEffect[lot]();
+        var eforig = /BIG|REG/.test(lot) ? 'BIG' : orig;
+        var effect = getEffect[orig]&&getEffect[orig]();
         var typera = TypeTable[orig]&&TypeTable[orig]();
         if(typera){
             if(bonusflag!='none'){kokuti = true}
