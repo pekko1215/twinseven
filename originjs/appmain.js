@@ -500,7 +500,7 @@ function main() {
             playcount: playcount,
             allplaycount: allplaycount,
             name: "ツインセブン",
-            id: "getter7"
+            id: "twinseven"
         }
     }
 
