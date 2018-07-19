@@ -11,8 +11,8 @@ var colordata = {
         alpha:0.5
     },
     RED_B:{
-        color:0xff0000,
-        alpha:0.3
+        color:0xffAAAA,
+        alpha:0.1
     },
     LINE_F:{
         color:0xcccccc,
@@ -24,7 +24,11 @@ var colordata = {
     },
     SYOTO_F:{
         color:0x666666,
-        alpha:0.5
+        alpha:0.2
+    },
+    BLUE_F:{
+        color:0xAAAAFF,
+        alpha:0.2
     }
 }
 
