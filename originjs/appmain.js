@@ -2,7 +2,7 @@ controlRerquest("data/control.smr", main)
 
 function main() {
     window.scrollTo(0, 0);
-
+    var sbig = false;
     var notplaypaysound = false;
 
     slotmodule.on("allreelstop", function(e) {
@@ -50,8 +50,6 @@ function main() {
                 case 'normal':
                     switch (d.name) {
                         case "7":
-                        case "V":
-                        case "ネズミ":
                             var bgmData = {
                                 "V": {
                                     tag: "VBIG",
@@ -70,20 +68,22 @@ function main() {
                             setGamemode('big');
                             sounder.playSound(bgmData['ネズミ'].tag, true, null, bgmData['ネズミ'].loopStart)
                             bonusdata = {
-                                bonusget: 360,
-                                geted: 0
+                                bonusgame:30,
+                                jaccount: 3
                             }
+                            sbig = bonusflag == 'BIG2';
                             bonusflag = "none";
                             changeBonusSeg()
                             clearLamp()
                             break;
-                        case "REG1":
+                        case "BAR":
                             setGamemode('reg');
                             sounder.stopSound("bgm");
-                            sounder.playSound("reg", true);
+                            // sounder.playSound("reg", true);
                             bonusdata = {
-                                bonusget: 120,
-                                geted: 0
+                                jacgetcount:8,
+                                jacgamecount:8,
+                                jaccount:0
                             }
                             changeBonusSeg();
                             bonusflag = "none";
@@ -105,22 +105,42 @@ function main() {
                             break;
                     }
                     break;
+                case 'big':
+                    if(d.name == "リプレイ"){
+                        setGamemode('jac');
+                        // sounder.stopSound("bgm");
+                        // sounder.playSound("reg", true);
+                        bonusdata.jacgetcount = 8;
+                        bonusdata.jacgamecount = 8;
+                        bonusdata.jaccount--;
+                        changeBonusSeg();
+                        bonusflag = "none";
+                        clearLamp()
+                    }
+                    // bonusdata.bonusgame--;
+                    break;
                 case 'reg':
                 case 'jac':
-                case 'big':
                     changeBonusSeg()
+                    bonusdata.jacgetcount--;
+                    // bonusdata.jacgamecount--;
             }
         })
-        if ((gamemode == "reg" || gamemode == 'jac' || gamemode == "big") && bonusdata.bonusgame == 0) {
+        if (gamemode == 'jac'  && ( bonusdata.jacgamecount == 0 || bonusdata.jacgetcount == 0)) {
+            if(bonusdata.jaccount){
+                setGamemode('big');
+            }else{
+                setGamemode('normal');
+                sounder.stopSound("bgm")
+                segments.effectseg.reset();
+                slotmodule.once("payend", function() {})
+            }
+        }
+        if(gamemode == 'big' && bonusdata.bonusgame == 0){
             setGamemode('normal');
             sounder.stopSound("bgm")
             segments.effectseg.reset();
             slotmodule.once("payend", function() {})
-        }
-        if (gamemode == "reg" || gamemode == 'jac') {
-            if (bonusdata.jacgamecount == 0 || bonusflag.jacgetcount == 0) {
-                setGamemode('big');
-            }
         }
 
         if (nexter) {
@@ -247,7 +267,7 @@ function main() {
                                 "斜めスイカはずれリーチ目",
                                 "滑りブランクリーチ目"
                                 ][rand(5)]
-                            bonusflag = ['BIG2','BIG1'][rand(2)];
+                            bonusflag = ['BIG2','BIG1'][rand(1)];
                         } else {
                             switch(bonusflag){
                                 case 'BIG1':
@@ -321,7 +341,7 @@ function main() {
                 ret = "JACGAME"
                 break;
         }
-        effect(lot);
+        effect(ret);
         return ret;
     })
 
@@ -421,52 +441,6 @@ function main() {
     var bigLotter = new Lotter(lotdata.big);
     var jacLotter = new Lotter(lotdata.jac);
 
-
-    var black = false;
-    if (black) {
-        var stock = {
-            big: 0,
-            reg: 0,
-            rt: null
-        };
-        var zyotai = false;
-        normalLotter.pipe(function(lot) {
-            switch (lot.name) {
-                case "BIG":
-                    if (rand(2) == 0) {
-                        zyotai = true;
-                        stock.rt = rand(32) + 1;
-                    } else {
-                        lot.name = null
-                        stock.big++;
-                    }
-                    break;
-            }
-            if (zyotai) {
-                if (bonusflag == "none") {
-                    if (stock.rt == null) {
-                        zyotai = false;
-                    } else {
-                        stock.rt--;
-                        if (stock.rt == 0) {
-                            if (rand(2) == 0) {
-                                stock.rt = rand(32) + 1;
-                            } else {
-                                stock.rt = null;
-                            }
-                            if (rand(3) != 0) {
-                                lot.name = "BIG"
-                            } else {
-                                lot.name = "REG"
-                                stock.rt = rand(32) + 1;
-                            }
-                        }
-                    }
-                }
-            }
-            return lot
-        })
-    }
 
     var gamemode = "normal";
     var bonusflag = "none"
@@ -643,11 +617,12 @@ function main() {
     }
 
     function changeBonusSeg() {
-        var tmp = bonusdata.bonusget - bonusdata.geted
-        if (tmp < 0) {
-            tmp = 0;
+        if(gamemode == 'big'){
+            segments.effectseg.setSegments(""+bonusdata.bonusgame);
+        }else{
+            var {jacgetcount,jaccount} = bonusdata;
+            segments.effectseg.setSegments(`${jaccount+1}-${jacgetcount}`);
         }
-        segments.effectseg.setSegments("" + tmp);
 
     }
 
@@ -701,9 +676,28 @@ function main() {
 
     }
 
+    function nabi(lot){
+        if(lot == "JACIN") return;
+        var nabiIdx = parseInt(lot.slice(-1))-1;
+        var color = nabiIdx % 2 == 0 ? colordata.RED_B : colordata.BLUE_F;
+        var reelIdx = ~~(nabiIdx / 2);
+        var matrix = [[0,0,0],[0,0,0],[0,0,0]];
+        matrix.forEach(arr=>{
+            arr[reelIdx] = 1;
+        })
+        slotmodule.setFlash(replaceMatrix(flashdata.default,matrix, color, null));
+        slotmodule.once('reelstop',()=>{
+            slotmodule.clearFlashReservation();
+        })
+    }
 
     function effect(lot) {
-        if(gamemode!='normal'){return}
+        if(gamemode!='normal'){
+            if (sbig && gamemode == 'big'){
+                nabi(lot);
+            }
+            return
+        }
         if(lot == 'REG' || bonusflag != 'none'){lot = 'BIG'}
         var effect = getEffect[lot]&&getEffect[lot]();
         if(!effect){return}

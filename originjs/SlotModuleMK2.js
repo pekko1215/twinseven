@@ -86,7 +86,7 @@ function SlotModuleMk2() {
 
         // フレーム数が２で割り切れなければ描画しない
 
-        frame%2||that.renderer.render(that.stage); // 描画する
+        frame%1||that.renderer.render(that.stage); // 描画する
     }
 
     var oldyaku;
