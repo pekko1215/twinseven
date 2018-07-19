@@ -79,7 +79,7 @@ function main() {
                         case "BAR":
                             setGamemode('reg');
                             sounder.stopSound("bgm");
-                            sounder.playSound("reg", true);
+                            // sounder.playSound("reg", true);
                             bonusdata = {
                                 jacgetcount:8,
                                 jacgamecount:8,
@@ -127,6 +127,7 @@ function main() {
             }
         })
         if (gamemode == 'jac'||gamemode == 'reg'  && ( bonusdata.jacgamecount == 0 || bonusdata.jacgetcount == 0)) {
+
             if(bonusdata.jaccount){
                 setGamemode('big');
             }else{
@@ -426,6 +427,7 @@ function main() {
     sounder.addFile("sound/SBIG.mp3", "SBIG").addTag("bgm")
     sounder.addFile("sound/nezumiBIG.wav", "ネズミBIG").addTag("bgm")
     sounder.addFile("sound/reg1.mp3", "reg").addTag("bgm");
+    sounder.addFile("sound/reg.wav", "reg").addTag("bgm");
     sounder.addFile("sound/title.wav",'title').addTag("se");
     sounder.addFile("sound/type.mp3",'type').addTag("se");
     sounder.addFile("sound/yokoku.wav",'yokoku').addTag("se");
