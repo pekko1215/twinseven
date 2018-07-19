@@ -126,7 +126,7 @@ function main() {
                     // bonusdata.jacgamecount--;
             }
         })
-        if (gamemode == 'jac'||gamemode == 'reg'  && ( bonusdata.jacgamecount == 0 || bonusdata.jacgetcount == 0)) {
+        if ((gamemode == 'jac'||gamemode == 'reg')  && ( bonusdata.jacgamecount == 0 || bonusdata.jacgetcount == 0)) {
 
             if(bonusdata.jaccount){
                 setGamemode('big');
