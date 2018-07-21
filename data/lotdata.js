@@ -179,17 +179,17 @@ const TypeTable = {
         }
     },
     'リプレイ':()=>{
-        if(!rand(120)){
+        if(!rand(500)){
             return 'リプレイを盗め！'
         }
     },
     'ベル':()=>{
-        if(!rand(120)){
+        if(!rand(500)){
             return 'プラムを盗め！'
         }
     },
     'スイカ':()=>{
-        if(!rand(12)){
+        if(!rand(32)){
             return 'ベルを盗め！'
         }
     },
