@@ -213,6 +213,7 @@ function main() {
                 }
             }
             if(pays <= 4 && pays) e.se = "cherry";
+            if(pays >= 14) e.se = "bigpay"
             if(!replayflag && !notplaypaysound){
                 sounder.playSound(e.se, e.se != "cherry");
             }
