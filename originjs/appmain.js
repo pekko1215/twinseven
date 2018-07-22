@@ -342,14 +342,9 @@ function main() {
                         }
 
                 }
-                /*
-                DNS→DNSサフィックスを順に追加
-                eng.kagawa-u.ac.jp
-                kagawa-u.ac.jp
-                 */
                 break;
             case "big":
-                if(!rand(7)){
+                if(!rand(6)){
                     ret = "JACIN"
                 }else{
                     ret = "ボーナス" + (rand(6)+1);

@@ -13,9 +13,9 @@ var lotdata = {
         {   name:"チェリー",
             value:1/32},
         {   name:"BIG",
-            value:1/270},
+            value:1/235},
         {   name:"REG",
-            value:1/350},
+            value:1/520},
         {   name:"3枚役",
             value:1/64}
     ],
