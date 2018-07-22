@@ -527,7 +527,8 @@ SlotModuleMk2.prototype.setMaxbet = function(e) {
 }
 SlotModuleMk2.prototype.clearFlashReservation = function() {
     this.playControlData.flashReservation = [];
-    this.setFlash(flashdata.default, 1)
+    this.setFlash(flashdata.default,1);
+    this.drawFlash();
 }
 
 

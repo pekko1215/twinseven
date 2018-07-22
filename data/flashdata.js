@@ -44,5 +44,9 @@ var flashdata = {
     syoto:{
         back:Array(3).fill(Array(3).fill(colordata.DEFAULT_B)),
         front:Array(3).fill(Array(3).fill(colordata.SYOTO_F))
+    },
+    blue:{
+        back:Array(3).fill(Array(3).fill(colordata.BLUE_F)),
+        front:Array(3).fill(Array(3).fill(colordata.BLUE_F))
     }
 }

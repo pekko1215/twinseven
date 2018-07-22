@@ -2,7 +2,7 @@ controlRerquest("data/control.smr", main)
 
 function main() {
     window.scrollTo(0, 0);
-    var sbig = false;
+    window.sbig = false;
     var notplaypaysound = false;
     var kokutid;
     var kokuti;
@@ -178,9 +178,10 @@ function main() {
                     if(kokuti){
                         slotmodule.freeze();
                         sounder.playSound('kokuti');
-                        slotmodule.setFlash(replaceMatrix(flashdata.default,[[1,1,1],[1,1,1],[1,1,1]],colordata.BLUE_F, null),200,()=>{
-                            slotmodule.clearFlashReservation();
+                        slotmodule.setFlash(flashdata.blue,200,()=>{
                             slotmodule.resume();
+                            slotmodule.clearFlashReservation();
+                            slotmodule.setFlash(flashdata.default)
                         });
                         kokutid = true;
                         kokuti = false;
@@ -204,8 +205,17 @@ function main() {
         }
         if (!("paycount" in e)) {
             e.paycount = 0
-            e.se = slotmodule.playControlData.lotmode == 0 ? "pay" : "pay"
-            replayflag || notplaypaysound || sounder.playSound(e.se, true);
+            e.se = "pay";
+            if(gamemode != "normal"){
+                e.se = "cherry"
+                if(pays == 15){
+                    e.se = "bigpay"
+                }
+            }
+            if(pays <= 4 && pays) e.se = "cherry";
+            if(!replayflag && !notplaypaysound){
+                sounder.playSound(e.se, e.se != "cherry");
+            }
         }
         if (pays == 0) {
             if (replayflag && replayflag && e.hityaku.hityaku[0].name != "チェリー") {
@@ -409,13 +419,17 @@ function main() {
         if (okure) {
             setTimeout(function() {
                 sounder.playSound("start")
-            }, 100)
+            }, 300)
         } else {
-            sounder.playSound("start")
+            if(!muon){
+                sounder.playSound("start")
+            }
         }
         okure = false;
+        muon = false;
     })
     var okure = false;
+    var muon = false;
     var sounder = new Sounder();
 
     sounder.addFile("sound/stop.wav", "stop").addTag("se");
@@ -429,7 +443,11 @@ function main() {
     sounder.addFile("sound/title.wav",'title').addTag("se");
     sounder.addFile("sound/type.mp3",'type').addTag("se");
     sounder.addFile("sound/yokoku.wav",'yokoku').addTag("se");
-    sounder.addFile("sound/kokutise.mp3",'kokuti').addTag("se");
+    sounder.addFile("sound/kokuti.mp3",'kokuti').addTag("se");
+    sounder.addFile("sound/syoto.mp3","syoto").addTag("se");
+    sounder.addFile("sound/syotoyokoku.mp3","syotoyokoku").addTag("se");
+    sounder.addFile("sound/cherry.mp3","cherry").addTag("se");
+    sounder.addFile("sound/bigpay.mp3","bigpay").addTag("se");
 
     sounder.setVolume("se", 0.2)
     sounder.setVolume("bgm", 0.1)
@@ -702,10 +720,13 @@ function main() {
         if(kokutid){
             return;
         }
-        if(lot == 'REG' || bonusflag != 'none'){lot = 'BIG'}
+        var plot = lot;
+        if(lot == 'REG' || bonusflag != 'none'){plot = 'BIG'}
         var eforig = /BIG|REG/.test(lot) ? 'BIG' : orig;
         var effect = getEffect[orig]&&getEffect[orig]();
-        var typera = TypeTable[orig]&&TypeTable[orig]();
+
+        var typera = TypeTable[lot]&&TypeTable[lot]();
+
         if(typera){
             if(bonusflag!='none'){kokuti = true}
             if(bonusflag!='none'&&orig!='BIG'){return}
@@ -725,8 +746,57 @@ function main() {
             });
             return;
         }
-        if(!effect){return}
-        if(effect&&!kokutid&&bonusflag!='none'&&!rand(4)){kokuti = true}
+        if(!kokutid&&bonusflag!='none'&&!rand(4)){kokuti = true}
+        if(!effect){
+            console.log(orig)
+            if((!orig&&!rand(256))||(orig=="3枚役")||kokuti){
+                sounder.playSound("syotoyokoku");
+                if(orig!="3枚役"){
+                    slotmodule.once('allreelstop',()=>{
+                        slotmodule.freeze();
+                        segments.effectseg.setSegments("717");
+                        sounder.playSound("syoto")
+                        slotmodule.setFlash(flashdata.syoto)
+                        var c = 2;
+                        var timer = setInterval(()=>{
+                            sounder.playSound("syoto")
+                            segments.effectseg.setSegments(" 7"+c+"7");
+                            c++;
+                            if(c==7){
+                                clearInterval(timer);
+                                if(kokuti&&rand(8)){
+                                    setTimeout(()=>{
+                                        slotmodule.clearFlashReservation();
+                                        segments.effectseg.setSegments("777");
+                                        sounder.playSound("kokuti")
+                                        slotmodule.setFlash(flashdata.blue,200,()=>{
+                                            slotmodule.resume();
+                                            kokutid = true;
+                                            kokuti = false;
+                                            slotmodule.clearFlashReservation();
+                                        });
+                                    },1000)
+                                }else{
+                                    setTimeout(()=>{
+                                        slotmodule.clearFlashReservation();
+                                        segments.effectseg.reset();
+                                        slotmodule.resume();
+                                    },1000)
+                                }
+                            }
+                        },600)
+                    })
+                }
+            return
+            }
+            if(lot=="チェリー"&&!rand(12)||(/BIG|REG/.test(orig)&&!rand(12))){
+                okure = true
+            }
+            if(orig == "BIG" && sbig && !rand(32)){
+                muon = true;
+            }
+            return
+        }
         sounder.playSound('yokoku');
         var efsegs = segments.effectseg.randomSeg();
         var timer = setInterval(() => {

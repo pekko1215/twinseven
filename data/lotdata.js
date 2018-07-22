@@ -13,9 +13,9 @@ var lotdata = {
         {   name:"チェリー",
             value:1/32},
         {   name:"BIG",
-            value:1/200},
+            value:1/270},
         {   name:"REG",
-            value:1/240},
+            value:1/350},
         {   name:"3枚役",
             value:1/64}
     ],
@@ -52,7 +52,7 @@ var getEffect = {
             case 8:
             case 9:
             case 10:
-                var r = [[true,true,false],[false,true,true]][rand(2)];
+                var r = [[true,false,true],[true,false,true]][rand(2)];
                 return {
                     timing:0,
                     r
@@ -106,21 +106,21 @@ var getEffect = {
             case 2:
                 var r = rand(10)<6 ? [[false,true,true],[false,true,true]][rand(2)] : [false,false,true];
                 return {
-                    timing:1,
+                    timing:0,
                     r
                 }
             case 3:
             case 4:
                 var r = rand(10)<6 ? [[false,true,true],[false,true,true]][rand(2)] : [false,false,true];
                 return {
-                    timing:2,
+                    timing:0,
                     r
                 }
             case 5:
             case 6:
                 var r = rand(10)<6 ? [[false,true,true],[false,true,true]][rand(2)] : [false,false,true];
                 return {
-                    timing:3,
+                    timing:0,
                     r
                 }
         }
@@ -161,7 +161,7 @@ var getEffect = {
 
 const TypeTable = {
     null:()=>{
-        if(!rand(1360)){
+        if(!rand(3360)){
             switch(rand(8)){
                 case 0:
                 case 1:
@@ -188,17 +188,22 @@ const TypeTable = {
             return 'プラムを盗め！'
         }
     },
-    'スイカ':()=>{
-        if(!rand(32)){
+    '平行スイカ':()=>{
+        if(!rand(128)){
+            return 'スイカを盗め！'
+        }
+    },
+    '斜めスイカ':()=>{
+        if(!rand(8)){
             return 'ベルを盗め！'
         }
     },
     'チェリー':()=>{
-        if(!rand(64)){
+        if(!rand(128)){
             return 'チェリーを盗め！'
         }
     },
-    'BIG':(sbig)=>{
+    '滑りなしリーチ目':(sbig)=>{
         if(!rand(4)){
             switch(rand(8)){
                 case 0:
@@ -214,11 +219,59 @@ const TypeTable = {
                     return 'プラムを盗め！';
                 case 4:
                 case 5:
-                    return 'ベルを盗め！'
+                    return 'スイカを盗め！'
                 case 6:
+                case 7:
+                    return'チェリーを盗め！';
+            }
+        }
+    },
+    'プラムはずれリーチ目':()=>{
+        if(!rand(4)){
+            switch(rand(8)){
+                case 0:
+                    return ['ボーナス確定？','リーチ目で決めろ？','1確で決めろ？','ゲチェナを盗め！'][rand(4)]
+                case 1:
+                    if(sbig && !rand(3)){
+                        return 'スーパービッグ確定！'
+                    }
+                    return 'ボーナス確定！';
+                case 2:
+                case 4:
+                    return 'リプレイを盗め！';
+                case 3:
+                case 5:
+                    return 'プラムを盗め！';
+                case 6:
+                    return 'スイカを盗め！'
+                case 7:
+                    return'チェリーを盗め！';
+            }
+        }
+    },
+    '平行スイカはずれリーチ目':()=>{
+        if(!rand(4)){
+            switch(rand(8)){
+                case 0:
+                    return ['ボーナス確定？','リーチ目で決めろ？','1確で決めろ？','ゲチェナを盗め！'][rand(4)]
+                case 1:
+                    if(sbig && !rand(3)){
+                        return 'スーパービッグ確定！'
+                    }
+                    return 'ボーナス確定！';
+                case 2:
+                    return 'リプレイを盗め！';
+                case 4:
+                    return 'プラムを盗め！';
+                case 5:
+                case 3:
+                case 6:
+                    return 'スイカを盗め！'
                 case 7:
                     return'チェリーを盗め！';
             }
         }
     }
 }
+
+TypeTable['斜めスイカはずれリーチ目'] = TypeTable['滑りブランクリーチ目'] = TypeTable['平行スイカはずれリーチ目'];
