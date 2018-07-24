@@ -45,11 +45,11 @@ var getEffect = {
             case 5:
             case 6:
             case 7:
+            case 8:
                 var r = [true,false,false];
                 return {
                     timing:0,r
                 }
-            case 8:
             case 9:
             case 10:
                 var r = [[true,false,true],[true,false,true]][rand(2)];
@@ -76,10 +76,10 @@ var getEffect = {
             case 5:
             case 6:
             case 7:
+            case 8:
                 return {
                     timing:0,r:[false,true,false]
                 }
-            case 8:
             case 9:
             case 10:
                 var r = [[true,true,false],[false,true,true]][rand(2)];
