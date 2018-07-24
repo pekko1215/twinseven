@@ -88,6 +88,8 @@ function main() {
                             changeBonusSeg();
                             bonusflag = "none";
                             clearLamp()
+                            kokuti = false;
+                            kokutid = false;
                             break;
                         case "チェリー":
                             matrix = matrix.map((arr) => {
